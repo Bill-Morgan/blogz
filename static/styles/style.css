@@ -6,6 +6,8 @@
 
 h1 {    text-align: center;}
 
+label { width: 200px;}
+
 .post_title {   font-size: 25px;
                 font-weight: bold;}
 
