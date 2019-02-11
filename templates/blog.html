@@ -3,9 +3,8 @@
     {% if posts %}
         {% for each_post in posts %}
             <p class='post_title'><a href='/blog?id={{each_post.id}}'>{{each_post.title}}</a></p>
+            <p class='owner'><a href='/blog?user={{each_post.owner.username}}'>{{each_post.owner.username}}</a></p>
             <p class='post_txt'>{{each_post.post_txt}}</p>
         {% endfor %}
-    {% else %}
-        <p>No posts yet.  Please add one!</p>
     {% endif %}
 {% endblock %}

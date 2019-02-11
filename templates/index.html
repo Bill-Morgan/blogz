@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block content %}
+    {% if users %}
+        {% for each_user in users %}
+            <p class='username'><a href='/blog?user={{each_user.username}}'>{{each_user.username}}</a></p>
+        {% endfor %}
+    {% endif %}
+{% endblock %}

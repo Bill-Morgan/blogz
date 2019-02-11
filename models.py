@@ -18,9 +18,9 @@ class User(db.Model):
     password = db.Column(db.String(120))
     blogs = db.relationship('Blog', backref='owner')
     
-    def __init__(self, email, password):
-        self.email = email
+    def __init__(self, username, password):
+        self.username = username
         self.password = password
 
     def __repr__(self):
-        return '<User %r>' % self.email
+        return '<User %r>' % self.username
