@@ -2,14 +2,66 @@
 <html>
     <head>
         <title>Build-a-blog</title>
-        <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/style.css') }}">
+        <!--<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles/style.css') }}">-->
+        <style>
+            body {  width: 75%;
+            margin: 25px auto;
+                }
+            .err {  color: red;
+                        font-style: italic;}
+
+            .del {  background-color: red;
+                    color: white;}
+
+            .options {  border: solid;
+                        border-color: gray;
+                        background-color: lightgray;
+                        padding: 25px;
+                        width: 300px;
+                    }
+
+            form {  width: 300px;}
+
+            input { float: right;}
+
+            select { float: right;}
+
+            .owner {    color: darkblue;
+                        font-size: 15px;
+                        font-style: italic;}
+
+            .login_reg {    float: right;}
+
+
+
+            .post_title {   font-size: 25px;
+                            font-weight: bold;}
+
+            .single_post {  font-size: 20px;}
+
+            .post_txt {     padding-bottom: 10px;
+                            border-bottom-style: solid;
+                            border-bottom-color: lightgray;
+                            border-bottom-width: 3px;}
+
+        </style>
     </head>
     <body>
         {% if session['username'] %}
-            <div><a href='/logout'>logout</a></div>
+            <div class='login_reg'><a href='/logout'>Logout</a></div>
+        <!--            ##########################
+                <form method="post" action='/logout' class='login_reg'>
+                <input type='submit' value='Logout'>
+            </form>
+        -->
         {% else %}            
-            <div><a href='/login'>Login</a> | <a href='/signup'>Signup</a></div>
+            <div class='login_reg'><a href='/login'>Login</a> | <a href='/signup'>Signup</a></div>
         {% endif %}        
+        <a href="/">Home</a>&emsp;
+        <a href="/blog">Main Blog Page</a>&emsp;
+        {% if session['username'] %}
+            <a href="/newpost">Add a Blog Entry</a>
+        {% endif %}
         {% with messages = get_flashed_messages(with_categories=True) %}
             <ul>
                 {% for category,message in messages %}
@@ -17,10 +69,6 @@
                 {% endfor %}
             </ul>
         {% endwith %}
-
-        <a href="/">Home</a>&emsp;
-        <a href="/blog">Main Blog Page</a>&emsp;
-        <a href="/newpost">Add a Blog Entry</a>
         <h1>
             {{page_title}}
         </h1>

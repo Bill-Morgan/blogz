@@ -1,10 +1,24 @@
+body {  width: 75%;
+        margin: 25px auto;
+    }
 .err {  color: red;
-        font-style: italic;}
+            font-style: italic;}
 
 .del {  background-color: red;
         color: white;}
 
-h1 {    text-align: center;}
+.options {  border: solid;
+            border-color: gray;
+            background-color: lightgray;
+            width: 200px;
+            padding: 15px;
+        }
+
+.owner {    color: darkblue;
+            font-size: 15px;
+            font-style: italic;}
+
+.login_reg {    float: right;}
 
 label { width: 200px;}
 

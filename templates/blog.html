@@ -1,10 +1,30 @@
 {% extends "base.html" %}
 {% block content %}
     {% if posts %}
-        {% for each_post in posts %}
+        <form action='/preferences?user={{user}}' method='post' class='options'>
+            <label>Number of blogz per page:
+                <select name='blogz-per-page'>
+                    {% for each in ['10', '50', '100', 'ALL']%}
+                        <option{% if session['blogz-per-page'] == each  %} selected{%endif%}>{{each}}</option>
+                    {% endfor %}
+                </select>
+            </label><br /><br />
+            <input class='submit' type='submit' value='Set Value' /><br />
+        </form>
+        {% for each_post in posts.items %}
             <p class='post_title'><a href='/blog?id={{each_post.id}}'>{{each_post.title}}</a></p>
-            <p class='owner'><a href='/blog?user={{each_post.owner.username}}'>{{each_post.owner.username}}</a></p>
+            <p class='owner'>posted by: <a href='/blog?user={{each_post.owner.username}}'>{{each_post.owner.username}}</a></p>
             <p class='post_txt'>{{each_post.post_txt}}</p>
         {% endfor %}
+        {% if posts.has_prev %}
+            <a href='/blog?page={{posts.prev_num}}&user={{user}}'>&lt;&lt; Newer posts</a>
+        {% else %}
+            &lt;&lt; Newer posts
+        {% endif %} | 
+        {% if posts.has_next %}
+            <a href='/blog?page={{posts.next_num}}&user={{user}}'>Older posts &gt;&gt;</a>
+        {% else %}
+            Older posts &gt;&gt;
+        {% endif %}
     {% endif %}
 {% endblock %}

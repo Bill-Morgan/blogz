@@ -1,9 +1,10 @@
-from flask import Flask, request, redirect, render_template, session, flash
+from flask import Flask, request, redirect, render_template, session, flash, url_for
 from datetime import datetime
 import re
 import cgi
 from app import app, db
 from models import User, Blog
+from hashutils import make_pw_hash, check_pw_hash
 
 def isvalidpost(title,newpost):
     title_error = ''
@@ -36,25 +37,32 @@ def get_current_user():
 def get_user(username):
     return (User.query.filter_by(username=username).first())
 
-@app.route('/logout')
+allowed_routes = ['signup', 'login', 'index', 'blog', 'preferences']
+
+@app.before_request
+def require_login():
+    if not ('username' in session or request.endpoint in allowed_routes):
+        return redirect("/")
+
+@app.route('/logout', methods=['POST', 'GET'])
 def logout():
     del session['username']
-    return redirect('/')
+    flash('Logged out.')
+    return redirect('/blog')
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
-        user = User.query.filter_by(username=username, password=password).first()
+        user = User.query.filter_by(username=username).first()
         if user:
-            session['username'] = username
-            flash('Logged in')
-            return redirect('/')
-        else:
-            flash('Password incorrect or user does not exist', 'error')
+            if check_pw_hash(password, user.pw_hash):
+                session['username'] = username
+                flash('Welcome {}!'.format(username))
+                return redirect('/')
+        flash('Password incorrect or user does not exist', 'error')
     return render_template('login.html')
-
 
 @app.route('/signup', methods=['POST', 'GET'])
 def signup():
@@ -80,6 +88,13 @@ def signup():
                 flash(password_error, 'err')
     return render_template('signup.html')
 
+@app.route('/preferences', methods=['POST'])
+def preferences():
+    session['blogz-per-page'] = request.form['blogz-per-page']
+    user = request.args.get('user', 'all')
+    flash('Blogz per page set to {}.'.format(session['blogz-per-page']))
+    return redirect('/blog?user={}'.format(user))
+
 @app.route('/newpost', methods=['POST', 'GET'])        
 def newpost():
     error = request.args.get("error")
@@ -98,6 +113,13 @@ def newpost():
 
 @app.route("/blog")
 def blog():
+    if not 'blogz-per-page' in session:
+        session['blogz-per-page'] = '10'
+    try:
+        per_page = int(session['blogz-per-page'])
+    except:
+        per_page = None
+    page = int(request.args.get('page',1))
     id = request.args.get('id')
     if id:
         id = int(id)
@@ -108,15 +130,16 @@ def blog():
         flash('No post found with id = {}.'.format(id), 'err')
         return render_template('blog.html', page_title='Build a Blog')        
     user = request.args.get('user')
-    if user:
+    if user and user != 'all':
         owner = get_user(user)
         if owner:
-            the_blogs = Blog.query.filter_by(owner_id=owner.id).all()
-            return render_template('blog.html', page_title='Build a Blog', posts=the_blogs)
+            page = int(request.args.get('page',1))
+            the_blogs = Blog.query.filter_by(owner_id=owner.id).order_by('post_datetime DESC').paginate(page,per_page,error_out=False)
+            return render_template('blog.html', page_title='Blogz for {}'.format(user), posts=the_blogs, user=user)
         flash('User {} not found.'.format(user), 'err')
         return render_template('blog.html', page_title='Build a Blog')        
-    the_blogs = Blog.query.order_by('post_datetime DESC').all()
-    return render_template('blog.html', page_title='Build a Blog', posts=the_blogs)
+    the_blogs = Blog.query.order_by('post_datetime DESC').paginate(page,per_page,error_out=False)
+    return render_template('blog.html', page_title='Build a Blog', posts=the_blogs, user='all')
 
 @app.route("/")
 def index():
