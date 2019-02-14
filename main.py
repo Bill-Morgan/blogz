@@ -92,7 +92,7 @@ def signup():
 def preferences():
     session['blogz-per-page'] = request.form['blogz-per-page']
     user = request.args.get('user', 'all')
-    flash('Blogz per page set to {}.'.format(session['blogz-per-page']))
+    flash('Blogs per page set to {}.'.format(session['blogz-per-page']))
     return redirect('/blog?user={}'.format(user))
 
 @app.route('/newpost', methods=['POST', 'GET'])        
@@ -135,7 +135,7 @@ def blog():
         if owner:
             page = int(request.args.get('page',1))
             the_blogs = Blog.query.filter_by(owner_id=owner.id).order_by('post_datetime DESC').paginate(page,per_page,error_out=False)
-            return render_template('blog.html', page_title='Blogz for {}'.format(user), posts=the_blogs, user=user)
+            return render_template('blog.html', page_title='Blogs for {}'.format(user), posts=the_blogs, user=user)
         flash('User {} not found.'.format(user), 'err')
         return render_template('blog.html', page_title='Build a Blog')        
     the_blogs = Blog.query.order_by('post_datetime DESC').paginate(page,per_page,error_out=False)

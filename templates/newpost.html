@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
 <form method='POST' >
-    <label for='title'>Title for your new blog:</label><br />
+    <label for='title'>Blog Title:</label>
     <input type='text' name='title' id='title' value='{{title}}' />
     <p class='err'>{{title_error}} </p>
-    <label for='newpost'>Your new blog:</label><br />
-    <textarea name='newpost' id='newpost'>{{newpost}}</textarea>
-    <p class='err'>{{blog_error}} </p>
+    <label for='newpost'>Your new blog:</label>
+    <textarea name='newpost' id='newpost' cols='21'>{{newpost}}</textarea>
+    <p class='err'>{{blog_error}} </p><br /><br />
     <input type='submit' />
 </form>
 {% endblock %}

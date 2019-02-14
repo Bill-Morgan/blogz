@@ -2,7 +2,7 @@
 {% block content %}
     {% if posts %}
         <form action='/preferences?user={{user}}' method='post' class='options'>
-            <label>Number of blogz per page:
+            <label>Number of blogs per page:
                 <select name='blogz-per-page'>
                     {% for each in ['10', '50', '100', 'ALL']%}
                         <option{% if session['blogz-per-page'] == each  %} selected{%endif%}>{{each}}</option>
