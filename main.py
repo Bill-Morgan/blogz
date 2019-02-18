@@ -61,7 +61,7 @@ def login():
                 session['username'] = username
                 flash('Welcome {}!'.format(username))
                 return redirect('/')
-        flash('Password incorrect or user does not exist', 'error')
+        flash('Password incorrect or user does not exist', 'err')
     return render_template('login.html')
 
 @app.route('/signup', methods=['POST', 'GET'])
