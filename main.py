@@ -74,7 +74,7 @@ def signup():
         password_error = isvalidpassword(password, verify)
         user = get_user(username)
         if user:
-            username_error = 'Username: ' + username + ' already exists.'
+            username_error = 'Username "' + username + '" already exists.'
         if not (username_error or password_error):
             new_user = User(username, password)
             db.session.add(new_user)
